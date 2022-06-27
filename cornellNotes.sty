@@ -1,0 +1,62 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{cornellNotes}[2020/10/21 1.0.0 Cornell Notes Template Maker]
+
+\usepackage{calc} 
+\usepackage{tikz} 
+\usepackage{expl3}
+
+%Original cornell note template by sgmoye on https://tex.stackexchange.com/questions/70570/cornell-notes-a-lyx-or-latex-solution-needed
+%Repeat code copied from Jospeh Wright https://tex.stackexchange.com/questions/16189/repeat-command-n-times
+%Combined into one command by Jakub Konkol https://www.jakubkonkol.com
+
+\newlength{\wholeboxwd}
+    \setlength{\wholeboxwd}{0.99\textwidth}
+\newlength{\wholeboxht}
+    \setlength{\wholeboxht}{0.95\textheight}
+%
+\newlength{\cuewd}
+    \setlength{\cuewd}{0.3\wholeboxwd}
+\newlength{\summht}
+    \setlength{\summht}{0.2\wholeboxht}
+\newlength{\cgridht}
+    \setlength{\cgridht}{\wholeboxht-\summht}
+\newlength{\cgridwd}
+    \setlength{\cgridwd}{\wholeboxwd-\cuewd}
+\newlength{\xorig}
+\newlength{\yorig}
+\setlength{\xorig}{0cm}
+\setlength{\yorig}{0cm}
+
+
+\newcommand{\cornellNotesSubject}{%Insert note subject here
+}
+\newcommand{\cornellNotesDate}{%Insert a date here
+}
+
+
+\newcommand{\cornellNotesPage}{%
+\begin{center}
+\begin{tikzpicture} 
+\draw[step=.5cm,gray!80,thin] (\cuewd,\summht) grid (\wholeboxwd,\wholeboxht);
+%% Optional:
+%\draw[step=.25cm,gray!30,thin] (\cuewd,\summht) grid (\wholeboxwd,\wholeboxht);      
+% Summary, top:
+\draw [line width=.2pt] (\xorig,\summht) -- (\wholeboxwd,\summht);  
+% Grid, left:
+\draw [line width=.2pt] (\cuewd,\summht) -- (\cuewd,\wholeboxht);
+% Draw the big box:
+\draw (\xorig,\yorig) rectangle (\wholeboxwd,\wholeboxht);
+\node[anchor=west] at (0.25,\wholeboxht-1em) {\textbf{Cues:}};
+\node[anchor=west] at (0.25,\summht-1em){\textbf{Summary:}}; 
+\node[anchor=west,fill=white] at (\cuewd+1em,\wholeboxht-1em) {\textbf{\ Notes:\ }};
+\node[anchor=west] at (0.25,\wholeboxht+2em){%
+    \parbox[t]{0.9\textwidth}{Subject: \cornellNotesSubject\par\smallskip Date: \cornellNotesDate}%
+};
+\end{tikzpicture} 
+\end{center}}
+
+\ExplSyntaxOn
+\cs_new_eq:NN \Repeat \prg_replicate:nn
+\ExplSyntaxOff
+
+\newcommand{\cornellNotesPacket}[2][1]{\setcounter{page}{#1} \Repeat{#2}{\cornellNotesPage}}
